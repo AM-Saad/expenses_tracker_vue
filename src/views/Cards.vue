@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="">
       <h1>Your Cards</h1>
     <Cards></Cards>
   </div>

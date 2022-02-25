@@ -7,35 +7,27 @@
       <button class="btn" @click="getCards()">Reload</button>
     </div>
 
-    <h2 class="p-3" v-if="route == 'Panel'">Your Cards:</h2>
+    <label>Choose Card:</label>
     <div v-if="!loading">
       <section class="all-cards">
         <div v-for="c in allCards" :key="c.name" class="wallet-card gradient-blue p-large f-center">
-          <router-link :to="{name:'card', params:{id:c._id}}">
-            <div>
-              <p>NAME:{{c.name}}</p>
-              <p class="c-w">
-                BALANCE:
-                <b class="c-g">{{c.balance}}</b> $
-              </p>
-              <p class="font-s f-right">{{c.date}}</p>
-            </div>
-          </router-link>
-
-        </div>
-        <router-link :to="{name:'newcard'}">
-          <div class="wallet-card gradient-light p-large c-b f-center">
-            <b>Add New Card</b>
-            <p>Go</p>
+          
+          <div  @click="chooseWallet(c._id, $event) ">
+            <p>{{c.name}}</p>
+            <p class="c-w">
+              BALANCE:
+              <b class="c-g">{{c.balance}}</b>$
+            </p>
+            <p class="font-s f-right">{{c.date}}</p>
           </div>
-        </router-link>
+        </div>
+
       </section>
     </div>
   </div>
 </template>
 <script>
-
-import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
+import { mapState,  } from "vuex";
 export default {
   name: "Cards",
   data() {
@@ -66,10 +58,20 @@ export default {
         this.loading = false;
       }
     },
-
+    chooseWallet(id, e) {
+      e.preventDefault();
+      const activeCards = document.getElementsByClassName("choosen");
+      for (let index = 0; index < activeCards.length; index++) {
+        const element = activeCards[index];
+        element.classList.remove("choosen");
+      }
+      e.currentTarget.parentNode.classList.add("choosen");
+      this.$emit("choosenwallet", id);
+    }
   },
   watch: {
     allCards(val) {
+      console.log('changed')
       this.loading = false;
     }
   }
@@ -85,7 +87,7 @@ export default {
   font-size: 23px;
   padding: var(--s-pading);
 }
-.all-cards .wallet-card {
+.wallet-card {
   height: 80%;
   margin-right: var(--m-margin);
   min-width: 330px;
@@ -93,18 +95,21 @@ export default {
   text-align: left;
   box-shadow: var(--shadow2);
   border-radius: var(--main-radius);
+  cursor: pointer;
 }
-.all-cards .wallet-card a {
+.wallet-card.choosen {
+  border: 2px solid #000;
+}
+.wallet-card a {
   color: #fff !important;
   height: 100%;
-  display: block
+  display: block;
 }
 @media only screen and (min-width: 320px) and (max-width: 767px) {
   .all-cards {
     height: 180px !important;
   }
-  .all-cards .wallet-card {
-    /* height: 100%; */
+  .wallet-card {
     width: 70%;
   }
 }

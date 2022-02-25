@@ -34,10 +34,6 @@ export default {
   computed: {
     ...mapState("expenses", ["fetching"])
   },
-  created(){
-    console.log('created');
-    
-  },
   methods: {
     createType: async function() {
       this.loading = true;
@@ -45,9 +41,7 @@ export default {
       if (valid.state) {
         const res = await this.$store.dispatch({
           type: "expenses/createType",
-          data: {
-            name: this.name
-          }
+          data: { name: this.name }
         });
       } else {
         this.$store.commit("msg", { msg: valid.msg, type: "info" });

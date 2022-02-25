@@ -105,19 +105,19 @@ export default {
   overflow: scroll;
   -webkit-box-shadow: var(--shadow);
   box-shadow: var(--shadow);
-  padding: var(--main-padding);
+  padding: var(--m-padding);
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
 }
 .insight_content .insight-items {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: var(--main-margin);
+  grid-gap: var(--m-margin);
   align-items: flex-start;
 }
 .insight_content .insight-items_item {
   background-color: #fff;
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
   border-radius: var(--main-radius);
   border: 1.1px solid #ccc;
   display: grid;

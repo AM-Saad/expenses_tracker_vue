@@ -2,7 +2,6 @@ export default class helpers {
     static createObj(data) {
         const expenses = {
             card: data.card,
-            billtype: data.billtype,
             category: data.category,
             amount: data.amount,
             approved: data.approved,
@@ -15,24 +14,23 @@ export default class helpers {
         return expenses
     }
     static validate(expenses) {
-
-        if (expenses.billtype == null) {
-            return { msg: 'Choose Bill Type', state: false }
-
+        if(!expenses.card){
+            return { msg: 'Choose Card', state: false }
         }
+        if(!expenses.category){
+            return { msg: 'Choose Category', state: false }
+        }
+  
         if (!expenses.amount < 0 ||
-            !expenses.quantity < 0) {
-            return { msg: 'Numbers must be positive', state: false }
-
+          !expenses.amount ) {
+            return { msg: 'Add Amount', state: false }
         }
         if (expenses.scheduleState) {
             if (expenses.duoDate == null) {
                 return { msg: 'Choose Duo Date', state: false }
             }
         }
-
         return { msg: 'done', state: true }
-
 
     }
 

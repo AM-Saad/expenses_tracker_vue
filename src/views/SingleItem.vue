@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="single-item scale">
-      <div class="inside-wrapper" :class="{ 'loader-effect': loading }">
+      <div  :class="{ 'loader-effect': loading }">
         <router-link :to="{ name: 'expenses' }" class="close">
           <i class="fas fa-arrow-left close-single-item"></i>
         </router-link>
@@ -57,12 +57,12 @@ export default {
       loading: true,
       expensesId: null,
       e: null,
-      uploadnewimg: false,
+      uploadnewimg: false
     };
   },
   computed: {
     ...mapState("expenses", ["allExpenses"]),
-    ...mapGetters("expenses", ["findById"]),
+    ...mapGetters("expenses", ["findById"])
   },
 
   components: {},
@@ -73,74 +73,67 @@ export default {
       this.e = expenses;
       this.loading = false;
     } else {
-      this.$store.commit("msg", {
-        type: "info",
-        msg: "Cannot find matched item. You'll be redirected",
-      });
-      setTimeout(() => {
-        this.$router.push({ name: "Panel" });
-      }, 5000);
     }
   },
   methods: {
-    getExpenses: async function (expensesId) {
+    getExpenses: async function(expensesId) {
       let ex;
       ex = this.findById(expensesId);
       if (!ex) {
         ex = await this.$store.dispatch({
-          type: "expenses/getOne",
-          data: { id: expensesId },
+          type: "expenses/fetchBill",
+          data: { id: expensesId }
         });
       }
       return ex;
     },
-    goBack: function () {
+    goBack: function() {
       window.history.back();
     },
-    removeExpenses: async function (expensesId) {
+    removeExpenses: async function(expensesId) {
       this.loading = true;
       const res = await this.$store.dispatch({
-        type: "expenses/deleteOne",
-        data: { expensesId },
+        type: "expenses/deleteBill",
+        data: { expensesId }
       });
 
-      res && this.$router.push({ name: "expenses" });
       this.loading = false;
+      this.$router.push({ name: "expenses" });
     },
-    approve: async function (expensesId) {
+    approve: async function(expensesId) {
       this.loading = true;
       const res = await this.$store.dispatch({
         type: "expenses/approve",
-        data: { expensesId },
+        data: { expensesId }
       });
       this.getExpenses(expensesId);
       this.loading = false;
-    },
+    }
   },
 
   watch: {
-    $route: function (to, from) {
+    $route: function(to, from) {
       if (this.isAuth) this.getExpenses(to.params.id);
     },
-    expenses: function (val) {},
-  },
+    expenses: function(val) {}
+  }
 };
 </script>
 
 <style scoped>
 .single-item_info {
   position: relative;
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
 }
 .single-item_info span {
   text-align: left;
   text-shadow: 0.5px 0.5px 1.2px rgb(111, 111, 111);
   text-transform: capitalize;
-  margin: var(--scnd-margin);
+  margin: var(--s-margin);
 }
 
 .single-item-core {
-  padding: var(--scnd-margin);
+  padding: var(--s-margin);
   /* background: #c7ffc7; */
   position: relative;
   max-height: 61%;
@@ -148,13 +141,13 @@ export default {
   overflow: scroll;
 }
 .single-item-core > div {
-  margin-bottom: var(--scnd-margin);
+  margin-bottom: var(--s-margin);
   padding: 10px;
   border-bottom: 1px solid #ccc;
   font-size: 16px;
 }
 .single-item-core p {
-  margin-bottom: var(--scnd-margin);
+  margin-bottom: var(--s-margin);
   font-size: 26px;
 }
 @media only screen and (min-width: 320px) and (max-width: 767px) {

@@ -19,7 +19,7 @@ export default new Vuex.Store({
     expiryDate: null,
     user: localStorage.getItem("user"),
     url: "http://localhost:3000",
-    msg: null
+    notifiy: {msg:null, type:null}
   },
   getters: {},
   mutations: {
@@ -61,9 +61,9 @@ export default new Vuex.Store({
       state.isAuth = false
 
     },
-    msg(state, msg) {
-      state.msg = msg
-      setTimeout(function () { state.msg = null }, 6000);
+    msg(state, notifiy) {
+      state.notifiy = notifiy
+      setTimeout(function () { state.notifiy.msg = null }, 5000);
 
     }
   },
@@ -72,13 +72,10 @@ export default new Vuex.Store({
     async  checkConnection({ state }) {
 
       const res = await fetch("http://info.cern.ch/")
-      console.log(res);
-
       state.networkconnections = !state.networkconnections
     },
     async  login({ context, commit, state }, { data }) {
       const response = await authService.login(data.email, data.password, state.url)
-      console.log(response);
       response.state && commit('authenticateUser', response.json);
       !response.state && commit('msg', { msg: response.msg, type: 'warning' })
       response.state && (state.msg = null)

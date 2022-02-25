@@ -45,11 +45,8 @@ const deposit = async ({ commit, state, rootState, dispatch }, { data }) => {
   state.fetching = true
   const res = await Card.deposit(data.id, data.amount, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
-
-
   commit('msg', { msg: res.msg, type: res.state ? 'success' : 'warning' }, { root: true })
   res.state && commit('updateOne', res.json.card)
-
   state.fetching = false
   return res
 }
@@ -59,10 +56,8 @@ const withdraw = async ({ commit, state, rootState, dispatch }, { data }) => {
   state.fetching = true
   const res = await Card.withdraw(data.id, data.amount, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
-
   commit('msg', { msg: res.msg, type: res.state ? 'success' : 'warning' }, { root: true })
   res.state && commit('updateOne', res.json.card)
-
   state.fetching = false
   return res
 }

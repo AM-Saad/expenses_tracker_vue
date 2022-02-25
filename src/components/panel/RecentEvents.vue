@@ -6,7 +6,7 @@
         <router-link :to="{name:`expenses`}" class="btn border-r-l ">See all</router-link>
       </div>
       <div>
-        <div v-for="e in thisMonth" :key="e._id">
+        <div v-for="e in limitedNewExpenses" :key="e._id">
           <router-link :to="{name:`item`, params:{id:e._id}}" :expensesId="e._id">
             <div class="list-item">
               <div class="flex">
@@ -21,7 +21,7 @@
                 class="alert-success font-s p-3 border-r-m state"
               >Approved</span>
               <span
-                v-if="!e.approved"
+               v-else
                 class="alert-warning font-s p-3 border-r-m state"
               >Not Approved</span>
             </div>
@@ -34,34 +34,18 @@
 </template>
 
 <script>
-import { bus } from "../../main.js";
-import { mapGetters, mapActions, mapState } from "vuex";
-import Schaduled from "@/components/panel/Schaduled.vue";
 
-import { setInterval } from "timers";
-import router from "@/routerRepo/router.js";
-import * as moment from "moment";
 export default {
   name: "Recent",
   data() {
-    return {
-      loading: false,
-      message: null,
-      expenses: []
-    };
+    return {};
   },
-  components: {},
-  computed: { ...mapState("expenses", ["isAuth", "fetching", "allExpenses"]) },
   props: ["thisMonth"],
-  methods: {},
-  async created() {
-    // this.$emit("overview", {
-    //   // sales: this.sales.length,
-    //   // customers: this.customers.length
-    // });
-  },
-  watch: {
-    thisMonth(val) {}
+
+  computed: {
+    limitedNewExpenses() {
+      return this.thisMonth.slice(0, 5);
+    }
   }
 };
 </script>

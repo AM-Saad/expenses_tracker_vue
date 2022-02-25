@@ -10,22 +10,24 @@
 }
 
 :root {
-  --main-padding: 15px;
-  --scnd-padding: 7px;
-  --main-margin: 15px;
-  --scnd-margin: 7px;
+  --l-padding: 30px;
+  --m-padding: 15px;
+  --s-padding: 7px;
+  --l-margin: 30px;
+  --m-margin: 15px;
+  --s-margin: 7px;
   --main-gradient: linear-gradient(to bottom right, var(--main-color), #454B83);
   --main-color: #ffd662;
   --second-color: #151d30;
   --main-radius: 9px;
   --scnd-radius: 3px;
-  --shadow3: 2px 4px 8px 0px rgba(0, 0, 0, 0.37), -2px -4px 8px 0px rgba(0, 0, 0, 0.37);
+  --shadow3: 2px 4px 8px 0px rgb(0 0 0 / 20%), -2px -4px 8px 0px rgb(0 0 0 / 12%);
   --shadow2: 0 0px 4px rgba(169, 169, 169, 0.16), 0 0px 4px rgba(78, 78, 78, 0.23);
   --shadow: -0.5px 0.5px 3px #9b9b9b, 1px 1px 3px #9b9b9b
 }
 
 body {
-  background-color: #f9f9f9!important;
+  background-color: #fff;
 }
 
 a {
@@ -62,8 +64,6 @@ a:visited {
 
 select {
   display: block;
-  background: var(--second-color) !important;
-  color: #fff !important;
   box-shadow: unset !important;
   min-width: 100px !important;
 }
@@ -147,7 +147,7 @@ ul {
   max-height: 340px;
   overflow: scroll;
   z-index: 999999;
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
   box-shadow: var(--shadow3);
 }
 
@@ -171,7 +171,7 @@ input, button, a:focus {
   margin: 10px auto 60px auto;
   overflow: hidden;
   transition: .2s all ease-in-out;
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
 }
 
 .sub-menu {
@@ -203,16 +203,7 @@ input, button, a:focus {
   border-top: 1px solid #eee;
 }
 
-.sub-menu_btn {
-  position: absolute;
-  right: 2%;
-  top: 2%;
-  text-align: center;
-  width: 25px;
-  line-height: 25px;
-  border-radius: 50%;
-}
-
+  
 .sub-menu_btn:hover, .sub-menu_btn:focus {
   background-color: #f9f9f9;
 }
@@ -255,7 +246,7 @@ main {
 
 header.home-head {
   width: 100%;
-  padding: var(--main-padding);
+  padding: var(--m-padding);
   display: grid;
   align-items: center;
   justify-items: center;
@@ -270,7 +261,7 @@ header.home-head {
   width: 74%;
   margin: auto;
   margin-top: 70px;
-  margin-bottom: var(--main-margin);
+  margin-bottom: var(--m-margin);
 }
 
 .header-intro {
@@ -303,7 +294,7 @@ header.home-head {
 header {
   display: grid;
   height: auto;
-  margin-bottom: var(--main-margin);
+  margin-bottom: var(--m-margin);
   position: relative;
   height: 100vh;
   overflow: hidden;
@@ -317,7 +308,7 @@ header {
   top: 50%;
   width: 80%;
   transform: translate(-50%, -50%);
-  padding: 0 var(--main-padding);
+  padding: 0 var(--m-padding);
 }
 
 .intro_info {
@@ -327,7 +318,7 @@ header {
 }
 
 .intro_info h1, .intro_info h2 {
-  margin-bottom: var(--main-margin);
+  margin-bottom: var(--m-margin);
   position: relative;
   z-index: 2;
 }
@@ -465,79 +456,18 @@ header {
   width: 100%;
 }
 
-.actions {
-  display: block;
-  margin: auto;
-  color: #fff;
-  z-index: 2;
-}
-
-.actions button, .actions a {
-  background-color: var(--second-color);
-  position: relative;
-  border: 1.5px solid var(--main-color);
-  color: #fff;
-  padding: 10px var(--main-padding);
-  font-weight: 300;
-  font-size: 14px;
-  vertical-align: middle;
-  letter-spacing: 1px;
-  transition: 0.5s;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: var(--main-radius);
-}
-
-.actions button::before, .actions a::before, .actions button::after, .actions a::after {
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  transform: scale(0);
-  transition: 0.5s;
-}
-
-button.foo::before, a.foo::before {
-  border-bottom: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  transform-origin: 0 100%;
-}
-
-button.foo::after, a.foo::after {
-  border-top: 1.5px solid #fff;
-  border-right: 1.5px solid #fff;
-  transform-origin: 100% 0%;
-}
-
-.actions button:hover, .actions a:hover {
-  border: 1.2px solid #fff;
-  color: #fff;
-  box-shadow: inset 0 0 14px 0px #ffffff38;
-}
-
-.actions .box:hover::after, .actions .box:hover::before {
-  --webkit-transform: scale(1);
-}
-
-.actions button:focus, .actions a:focus {
-  outline: none;
-}
 
 #services {
-  padding: var(--main-padding) 0;
+  padding: var(--m-padding) 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: var(--scnd-margin);
-  margin-bottom: var(--main-margin);
+  grid-gap: var(--s-margin);
+  margin-bottom: var(--m-margin);
   border-radius: var(--main-radius);
 }
 
 .services-item {
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
   text-align: center;
   border-radius: var(--scnd-radius);
   box-shadow: var(--shadow);
@@ -555,13 +485,13 @@ button.foo::after, a.foo::after {
   background: #fff;
   width: 80%;
   height: 45px;
-  margin: var(--scnd-margin) auto;
+  margin: var(--s-margin) auto;
 }
 
 #service-info {
   box-shadow: var(--shadow);
-  padding: var(--main-padding);
-  margin-bottom: var(--main-margin);
+  padding: var(--m-padding);
+  margin-bottom: var(--m-margin);
   border-radius: var(--main-radius);
   color: var(--main-color);
 }
@@ -593,20 +523,20 @@ footer {
   height: 250px;
   width: 100%;
   box-shadow: var(--shadow2);
-  padding: var(--main-padding);
+  padding: var(--m-padding);
   display: grid;
   grid-template-columns: 1fr 1fr;
   background-color: #111;
 }
 
 footer .creator-info {
-  padding: var(--main-padding);
+  padding: var(--m-padding);
   display: grid;
   justify-content: center;
 }
 
 footer .creator-info-logo p {
-  padding-right: var(--main-padding);
+  padding-right: var(--m-padding);
   color: #fff;
   font-weight: bold;
 }
@@ -639,7 +569,7 @@ footer .creator-info-media i:hover {
 }
 
 footer .contactus {
-  padding: var(--main-padding);
+  padding: var(--m-padding);
   justify-self: flex-start;
 }
 
@@ -652,7 +582,7 @@ footer .contactus p {
 footer .contactus-lists-subMenu li {
   color: #eee;
   font-size: 17px;
-  margin: var(--main-margin);
+  margin: var(--m-margin);
   cursor: pointer;
 }
 
@@ -666,14 +596,14 @@ footer .contactus-lists-socialMedia {
 }
 
 footer .contactus-lists-socialMedia li {
-  margin: 0 var(--scnd-margin);
+  margin: 0 var(--s-margin);
   font-size: 22px;
 }
 
 /*login Page*/
 
 .authForm {
-  padding: var(--scnd-padding)
+  padding: var(--s-padding)
 }
 
 @media only screen and (min-width: 320px) and (max-width: 767px) {

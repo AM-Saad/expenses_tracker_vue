@@ -43,14 +43,14 @@ async function request(jwt, url, method, body, contentType) {
 
         }
         const json = await res.json()
-        
-        if (res.status == 200) {
+
+        if (res.status == 200 || res.status == 201) {
             return { msg: json.message, json, state: true, code: res.status }
         } else {
             return { state: false, msg: json.message, code: res.status }
         }
     } catch (error) {
-        
+
         return { state: false, msg: 'Internal Error', code: 500 }
     }
 }

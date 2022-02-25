@@ -10,10 +10,10 @@
       integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
       crossorigin="anonymous"
     />
-    <MessageComponent v-if="msg" :msg="msg"></MessageComponent>
+    <MessageComponent v-if="notifiy.msg" :notifiy="notifiy"></MessageComponent>
     <NavbarComponent></NavbarComponent>
     <!-- <div class="wrapper"> -->
-    <div class="router-view">
+    <div class="router-view wrapper">
       <div class="reload" v-if="!networkconnections">
         <h1>Hmmm...</h1>
         <p>Looks like you lost your connection, please check it and try again.</p>
@@ -65,7 +65,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["networkconnections", "isAuth", "msg"]),
+    ...mapState(["networkconnections", "isAuth", "notifiy"]),
     ...mapActions(["logout"])
   },
   mounted() {

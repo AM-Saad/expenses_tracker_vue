@@ -1,7 +1,7 @@
 <template>
   <div class="expenses-form grid scale">
     <form
-      class="p-relative save-expenses inside-wrapper"
+      class="p-relative save-expenses"
       method="POST"
       @submit.prevent="saveExpenses"
     >
@@ -12,10 +12,11 @@
           <i class="fas fa-arrow-left toggle-expenses-form"></i>
         </router-link>
       </div>
+  <CreateByVoice />
       <div>
         <Cards @choosenwallet="getChoosenWallet"></Cards>
         <div class="expenses-options flex f-space-evenly">
-          <div class="form-group">
+          <!-- <div class="form-group">
             <div class="cntr">
               <label class="cntrLabel">Approved</label>
               <label for="approved" class="custom-label">
@@ -60,7 +61,7 @@
                 </div>
               </label>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="parent-card bg-lightgray">
@@ -91,25 +92,7 @@
             ></i>
           </div>
         </div>
-        <div class="form-group">
-          <label for="billtype">Type</label>
-          <div class="flex f-space-between">
-            <select
-              class="form-control"
-              name="billtype"
-              id="billtype"
-              v-model="billtype"
-            >
-              <option selected value="null">Choose Bill Type</option>
-              <option value="income">Income</option>
-              <option value="outcome">Outcome</option>
-            </select>
-            <i
-              class="fas fa-plus btn-small c-g i-bg i-bg-large font-m new-expenses-type bg-lightgray"
-            ></i>
-          </div>
-        </div>
-
+     
         <div class="form-group">
           <label for="dueDate">Due Date</label>
           <v-calendar is-double-paned></v-calendar>
@@ -146,24 +129,19 @@
           />
         </div>
       </div>
-      <button id="submitExpenses" type="submit" class="btn save-btn">
-        <span class="arrow">
-          <span>Save</span>
-          <i class="fas fa-arrow-up"></i>
-        </span>
-      </button>
+      <button v-if="!loading" type="submit" class="btn ">Save</button>
+      <button v-if="loading" class="btn opacity-5">Loading</button>
     </form>
   </div>
 </template>
 
 <script>
-import * as io from "socket.io-client";
-import * as moment from "moment";
-import Cards from "@/components/card/Cards.vue";
+import Cards from "@/components/expenses/createItemComponents/Cards.vue";
+import CreateByVoice from "@/components/expenses/createItemComponents/CreateByVoice.vue";
 import itemHelpers from "@/components/expenses/helpers/main";
 import VCalendar from "v-calendar";
 
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState } from "vuex";
 export default {
   name: "CreateNewItem",
   data() {
@@ -171,74 +149,62 @@ export default {
       fetching: false,
       loading: false,
       wallet: null,
-      duo: null,
-      date: null,
-      billtype: null,
+      duo: new Date(),
+      date: new Date(),
       category: null,
       amount: 0,
       approved: false,
       paid: false,
       notes: null,
-      customTypes: [],
+      customTypes: []
     };
   },
   computed: {
     // ...mapState("inventory", ["inventoryObj"]),
-    ...mapState(["isAuth"]),
+    ...mapState(["isAuth"])
   },
   components: {
     VCalendar,
     Cards,
+    CreateByVoice
   },
-  watch: {},
   async created() {
     const res = await this.$store.dispatch({
-      type: "expenses/getypes",
+      type: "expenses/fetchCategories"
     });
     this.customTypes = res;
   },
   methods: {
-    getChoosenWallet: function (id) {
+    getChoosenWallet: function(id) {
       this.wallet = id;
     },
-    getitemType: function (val) {},
-    saveExpenses: async function () {
-      this.loading = true;
+    saveExpenses: async function() {
       const expenses = await itemHelpers.createObj({
         card: this.wallet,
-        billtype: this.billtype,
         category: this.category,
         amount: this.amount,
         approved: this.approved,
         paid: this.paid,
         duo: this.duo,
         date: this.date,
-        notes: this.notes,
+        notes: this.notes
       });
-      console.log(expenses);
 
       const validate = await itemHelpers.validate(expenses);
       if (!validate.state) {
-        this.$store.commit("msg", { type: "info", msg: validate.msg });
-      } else {
-        const res = await this.$store.dispatch({
-          type: "expenses/createNew",
-          data: { expenses: expenses },
-        });
-        console.log(res);
-
-        if (res != false) {
-          this.$store.commit("cards/updateOne", res);
-        }
+        return this.$store.commit("msg", { type: "info", msg: validate.msg });
+      }
+      this.loading = true;
+      const res = await this.$store.dispatch({
+        type: "expenses/createBill",
+        data: { expenses: expenses }
+      });
+      if (res != false) {
+        this.$store.commit("cards/updateBalance", res);
       }
       this.loading = false;
-    },
-  },
-  watch: {
-    duo(val) {
-      console.log(val);
-    },
-  },
+    }
+  }
 };
 </script>
 

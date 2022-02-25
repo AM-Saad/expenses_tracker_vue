@@ -1,10 +1,15 @@
 <template>
   <div>
     <aside class="section-filters grid g-two parent-card">
-      <div class="flex">
+      <div>
+     
+      <div class="flex section-filters_date_wrapper">
+        <div class="flex">
+
+        
         <div class="form-group">
           <select
-            class="form-control"
+            class="border-none"
             name="datetype"
             id="datetype"
             v-model="datetype"
@@ -15,7 +20,6 @@
           </select>
         </div>
         <div class="section-filters_date">
-          <h5>Date Range:</h5>
           <v-calendar is-double-paned v-model="date"></v-calendar>
           <v-date-picker
             mode="range"
@@ -24,58 +28,31 @@
             v-model="date"
           ></v-date-picker>
         </div>
-      </div>
-      <section class>
-        <h5>Filter</h5>
-        <div class="flex">
-          <div class="types-btn">
-            <a class="btn p-relative sub-menu_btn sort-menu_btn">
-              <i class="fas fa-sort"></i> Type
-            </a>
-          </div>
-          <div v-if="!group">
-            <a class="btn p-relative sub-menu_btn sort-menu_btn">
-              <i class="fas fa-sort"></i>
-              Sort
-              <ul class="sub-menu">
-                <li
-                  class="btn bg-w sort heigest"
-                  @click="sortItems('heigest', $event)"
-                >
-                  Heigest
-                </li>
-                <li class="btn bg-w sort" @click="sortItems('lowest', $event)">
-                  Lowest
-                </li>
-              </ul>
-            </a>
-          </div>
-          <div>
-            <a class="btn sub-menu_btn group-menu_btn p-relative">
-              <i class="far fa-object-group"></i>
-              Group by
-              <ul class="sub-menu">
-                <li @click="groupItems('approved')">Approved</li>
-                <li
-                  class="btn bg-w group schedule-expenses"
-                  @click="groupItems('scheduled')"
-                >
-                  Scheduled
-                </li>
-              </ul>
-            </a>
-          </div>
-          <a class="btn" @click="changeLayout('bar')">
-            <i class="fas fa-bars change-layout bar-layout"></i>
-          </a>
-          <a class="btn" @click="changeLayout('grid')">
-            <i class="fas fa-grip-horizontal change-layout grid-layout"></i>
-          </a>
-          <a class="btn" v-on:click="insights = !insights">
-            <i class="fas fa-lightbulb c-y"></i>
-          </a>
         </div>
-      </section>
+        <div class="p-relative">
+            <a class="btn sub-menu_btn">Filter<i class="fa fa-caret-down m-r-3 m-l-3"></i></a>
+            <ul class="sub-menu">
+                <li class=" p-relative">
+                    <a class="sub-menu_btn second-level">Category<i
+                            class="fa fa-caret-left m-r-3 m-l-3"></i></a>
+                    <ul class="sub-menu">
+                        <li v-for="t in combinedcategories"  @click="startFiltering(t,'category', true)"  :key="t" class="filter-shipments" data-filter="category" :data-sku="t" :data-val="t">
+                            {{t}}
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+          </div>
+      </div>
+       <div class="options-filters flex">
+  <div v-for="t in filters.types" :key="t.filterVal" class="options-filters_tag" @click="removeFilter(t.filterVal, t.filterType)" :data-filter="t.filterType" :data-sku="t.filterVal" :data-val="t.filterVal">
+            <i class="fas fa-times remove-filter"></i>
+            <span>{{t.filterVal}}</span>
+        </div>
+                    </div>
+      </div>
+     
     </aside>
   </div>
 </template>
@@ -83,6 +60,8 @@
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 import VCalendar from "v-calendar";
+import * as moment from "moment";
+import { exists } from "fs";
 
 export default {
   name: "Filter",
@@ -91,81 +70,89 @@ export default {
       insights: false,
       openfilter: false,
       datetype: "date",
-      date: null,
+      date: null
     };
   },
   components: {
-    VCalendar,
+    VCalendar
   },
   computed: {
-    ...mapState("expenses", ["dateRange"]),
-    ...mapGetters("expenses", [
-      "sortheigest",
-      "sortlowest",
-      "groupApprovedExpenses",
-    ]),
+    ...mapState("expenses", ["dateRange", "categories", "filters"]),
+    combinedcategories() {
+      return [
+        ...this.categories,
+        ...["advertising", "wages", "utilities", "rent"]
+      ];
+    }
   },
-  props: ["expenses", "group"],
-  created() {
-    this.date = this.dateRange;
+  async created() {
+    const res = await this.$store.dispatch({
+      type: "expenses/getCategories"
+    });
   },
   methods: {
-    changeLayout: function (layout) {
+    changeLayout: function(layout) {
       this.$emit("layout", layout);
     },
-    sortItems: function (type, event) {
-      event.stopPropagation();
-      let expenses;
-      if (type == "lowest") {
-        expenses = JSON.parse(JSON.stringify(this.sortlowest(this.expenses)));
-      } else {
-        expenses = JSON.parse(JSON.stringify(this.sortheigest(this.expenses)));
-      }
-      this.$emit("filtered", expenses);
-    },
-    groupItems: function (type) {
+
+    groupItems: function(type) {
       const data = this.groupApprovedExpenses(this.expenses);
       this.$emit("groupeditems", { state: "approved", data });
     },
+    startFiltering: async function(filterVal, filterType, update) {
+      let url = "";
+
+      if (filterType === "category") {
+        url = this.getQueryUrl({ category: filterVal }, filterType);
+      } else if (filterType == "date") {
+        url = this.getQueryUrl(
+          {
+            from: moment(filterVal.start).format("YYYY-MM-DD"),
+            to: moment(filterVal.end).format("YYYY-MM-DD"),
+            type: this.datetype
+          },
+          filterType
+        );
+        filterVal =
+          moment(filterVal.start).format("YYYY-MM-DD") +
+          "-" +
+          moment(filterVal.end).format("YYYY-MM-DD");
+      } else {
+      }
+      this.$emit("search", url, { filterType, filterVal }, update);
+    },
+
+    removeFilter: function(filterVal, filterType) {
+      this.$store.dispatch("expenses/removeFilter", { filterVal, filterType });
+    },
+
     getQueryUrl: (query, searchType) => {
       switch (searchType) {
         case "date":
-          return `?from=${query.from}&&to=${query.to}&&type=${query.type}`;
+          return `/admin/api/bills?from=${query.from}&&to=${query.to}&&type=${
+            query.type
+          }`;
         case "serial":
-          return `?no=${query.no}`;
+          return `/admin/api/bills?no=${query.no}`;
         case "category":
-          return `?category=${query.category}`;
+          return `/admin/api/bills?category=${query.category}`;
         case "id":
-          return `?id=${query.id}`;
-        case "status":
-          return `?status=${query.status}`;
+          return `/admin/api/bills?id=${query.id}`;
+        case "zone":
+          return `/admin/api/bills?zone=${query.zone}`;
         default:
-          return ``;
+          return `/admin/api/bills`;
       }
-    },
-    findByDate: async (val) => {
-      const from = moment(val.start).format("YYYY-MM-DD");
-      const to = moment(val.end).format("YYYY-MM-DD");
-      this.allexpenses = await this.$store.dispatch({
-        type: "expenses/findByDate",
-        data: {
-          from: from,
-          to: to,
-          update: true,
-        },
-      });
-    },
+    }
   },
   watch: {
     date(date) {
-      this.findByDate(date);
-      // this.$store.dispatch({ type: "expenses/updatesearchdate", date });
+      this.startFiltering(date, "date", true);
     },
-
     insights(val) {
       this.$emit("insights", this.insights);
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -173,20 +160,41 @@ export default {
 h5 {
   color: var(--main-color);
 }
+.section-filters_date_wrapper {
+  justify-self: baseline;
+  align-self: center;
+}
 .section-filters_date /deep/ input {
-  color: #fff !important;
-  background-color: var(--second-color) !important;
   background-clip: padding-box !important;
   border: 1.1 px solid var(--main-color) !important;
   line-height: 1.5 !important;
   border-radius: var(--main-radius) !important;
-  padding: 3px var(--scnd-padding);
+  padding: 3px var(--s-padding);
   font-size: 14px;
   width: 180px;
-  margin-right: var(--scnd-margin);
+  margin-right: var(--s-margin);
 }
 .types-btn {
   display: none;
+}
+.options-filters {
+  max-width: 100%;
+  overflow-x: scroll;
+  background: #f9f9f9;
+  padding: var(--s-padding) 0;
+}
+
+.options-filters_tag {
+  background-color: #ccc;
+  height: 29px;
+  min-width: 100px;
+  line-height: 28px;
+  padding: 0 var(--s-padding);
+  border: 1px solid #777;
+  border-radius: var(--s-radius);
+  font-size: 13px;
+  margin: 0 var(--s-margin);
+  text-align: center;
 }
 @media only screen and (min-width: 320px) and (max-width: 767px) {
   .g-two {

@@ -22,12 +22,12 @@
             <span v-if="e.approved " class="c-g" tooltip="Approved" flow="left">
               <i class="far fa-check-circle"></i>
             </span>
-            <span v-if="!e.approved " class="c-r" tooltip="Not approved" flow="left">
+            <span v-else class="c-r" tooltip="Not approved" flow="left">
               <i class="far fa-times-circle"></i>
             </span>
           </div>
 
-          <div class="marked" :style="{right:'70px'}" :class="{'block':e.scheduled.state}" v-if="!e.approved">
+          <div class="marked" :style="{right:'70px'}" v-if="!e.approved">
             <span
               :tooltip="'Duo to ' + e.duo"
               flow="left"

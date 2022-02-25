@@ -10,8 +10,8 @@
         >
           <div class="list-item">
             <div class="grid">
-              <span class>{{ e.type }}</span>
-              <span class="c-g">$ {{ e.total }}</span>
+             <span class>{{e.category }}</span>
+                  <span class="c-g">$ {{e.amount }}</span>
             </div>
             <span
               v-if="e.approved"
@@ -38,8 +38,8 @@
         >
           <div class="list-item">
             <div class="grid">
-              <span class>{{ e.category }}</span>
-              <span class="c-g">$ {{ e.amount }}</span>
+                <span class>{{e.category }}</span>
+                  <span class="c-g">$ {{e.amount }}</span>
             </div>
             <span
               v-if="e.approved"
@@ -71,37 +71,39 @@ export default {
     return {
       loading: true,
       today: [],
-      tomorrow: [],
+      tomorrow: []
     };
   },
   computed: {
-    ...mapState("expeenses", ["allCards"]),
+    ...mapState("expeenses", ["allCards"])
   },
 
   async created() {
     this.today = await this.$store.dispatch({
-      type: "expenses/findByDate",
+      type: "expenses/fetchBills",
       data: {
-        from: moment().format("YYYY-MM-DD"),
-        to: moment().format("YYYY-MM-DD"),
-        datetype: "duo",
-      },
+        url: `/admin/api/bills?from=${moment().format(
+          "YYYY-MM-DD"
+        )}&&to=${moment().format("YYYY-MM-DD")}&&type=duo`
+      }
     });
     this.tomorrow = await this.$store.dispatch({
-      type: "expenses/findByDate",
+      type: "expenses/fetchBills",
       data: {
-        from: moment().add(1, "days").format("YYYY-MM-DD"),
-        to: moment().add(1, "days").format("YYYY-MM-DD"),
-        datetype: "duo",
-      },
+        url: `/admin/api/bills?from=${moment()
+          .add(1, "days")
+          .format("YYYY-MM-DD")}&&to=${moment()
+          .add(1, "days")
+          .format("YYYY-MM-DD")}&&type=duo`
+      }
     });
     this.loading = false;
   },
   watch: {
     tomorrow(val) {
       this.loading = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

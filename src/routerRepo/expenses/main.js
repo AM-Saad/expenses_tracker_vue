@@ -16,9 +16,9 @@ export default [
     },
     {
         name: 'newexpenses',
-        path: '/newexpenses',
+        path: '/new-expenses',
         component: () =>
-            import(/* webpackChunkName: "newitem" */ "@/components/expenses/createItemComponents/CreateNew.vue"),
+            import(/* webpackChunkName: "newitem" */ "@/views/CreateNewExpenses.vue"),
         meta: {
             requiredAuth: true,
             index: 1,
@@ -38,7 +38,7 @@ export default [
         name: 'item',
         path: '/item/:id',
         component: () =>
-            import(/* webpackChunkName: "items" */ "@/components/expenses/SingleItemComponent.vue"),
+            import(/* webpackChunkName: "items" */ "@/views/SingleItem.vue"),
         children: [
             {
                 name: 'invoice',

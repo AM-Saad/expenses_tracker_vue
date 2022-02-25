@@ -12,7 +12,7 @@
             Total Expenses this month is: {{thisMonthTotalExpenses}}$
             <br />
             <span
-              style="font-size:13px; font-weight:lighter"
+              style="font-size:16px; font-weight:lighter"
             >Compared Last Month is: {{lastMonthTotalExpenses}}$</span>
           </p>
         </div>
@@ -32,44 +32,59 @@
 </template>
 
 <script>
-import * as io from "socket.io-client";
-import * as moment from "moment";
-import Chart from "chart.js";
 
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState } from "vuex";
 export default {
   name: "ComparisonComponent",
   data() {
     return {
       loading: true,
-      thisMonthTotalExpenses: 0,
-      lastMonthTotalExpenses: 0,
-      dateOfLastExpenses: null,
-      expensesPercentageFloor: 0
+      dateOfLastExpenses: null
     };
   },
-  computed: { ...mapState("expenses", ["isAuth", "fetching"]) },
-  components: {
+  computed: {
+    ...mapState("expenses", ["isAuth", "fetching"]),
+    thisMonthTotalExpenses() {
+      const expenses = JSON.parse(JSON.stringify(this.thisMonth));
+      let total = 0;
+      expenses.forEach(e => {
+        total += e.amount;
+      });
+      return total;
+    },
+    lastMonthTotalExpenses() {
+      const expenses = JSON.parse(JSON.stringify(this.lastMonth));
+      let total = 0;
+      if (expenses.length > 0) {
+        const lastExpensesThisMonth = expenses.length - 1;
+        const dateOfLastExpenses = this.getDateDate(
+          expenses[lastExpensesThisMonth].createdAt
+        );
+        expenses.forEach(e => {
+          if (this.getDateDate(e.createdAt) <= dateOfLastExpenses) {
+            total += e.amount;
+          }
+        });
+      }
+      return total;
+    },
+    expensesPercentageFloor() {
+      let percentageOfExpenses = 0;
+      if (this.lastMonthTotalExpenses < this.thisMonthTotalExpenses) {
+        percentageOfExpenses =
+          100 - this.lastMonthTotalExpenses / this.thisMonthTotalExpenses * 100;
+      } else {
+        percentageOfExpenses =
+          100 - this.thisMonthTotalExpenses / this.lastMonthTotalExpenses * 100;
+      }
+      return Math.floor(percentageOfExpenses);
+    }
   },
   props: ["thisMonth", "lastMonth"],
   async created() {
-    this.expensespercentages();
     this.loading = false;
   },
   methods: {
-    expensespercentages() {
-      let percentageOfExpenses;
-      if (this.lastMonthTotalExpenses < this.thisMonthTotalExpenses) {
-        percentageOfExpenses =
-          100 -
-          (this.lastMonthTotalExpenses / this.thisMonthTotalExpenses) * 100;
-      } else {
-        percentageOfExpenses =
-          100 -
-          (this.thisMonthTotalExpenses / this.lastMonthTotalExpenses) * 100;
-      }
-      this.expensesPercentageFloor = Math.floor(percentageOfExpenses);
-    },
     getMonthDate(date) {
       const newDate = new Date(date);
       return newDate.getMonth();
@@ -79,48 +94,22 @@ export default {
       return newDate.getDate();
     }
   },
-  watch: {
-    thisMonth(val) {
-      const expenses = JSON.parse(JSON.stringify(val));
-      expenses.forEach(e => {
-        this.thisMonthTotalExpenses += e.total;
-      });
-      this.expensespercentages();
-    },
-    lastMonth: function(val, val2) {
-      const expenses = JSON.parse(JSON.stringify(val));
-      if (expenses.length > 0) {
-        const lastExpensesThisMonth = expenses.length - 1;
-        const dateOfLastExpenses = this.getDateDate(
-          expenses[lastExpensesThisMonth].createdAt
-        );
-        expenses.forEach(e => {
-          if (this.getDateDate(e.createdAt) <= dateOfLastExpenses) {
-            this.lastMonthTotalExpenses += e.total;
-          }
-        });
-      }
-      this.expensespercentages();
-    }
-  }
 };
 </script>
 
 <style>
 .item_percentage p {
   font-size: 22px;
-  margin-left: var(--main-margin);
+  margin-left: var(--m-margin);
   font-weight: bold;
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
   border-radius: var(--main-radius);
   display: flex;
   align-items: center;
   border: 1.2px solid;
 }
 
-
 @media only screen and (min-width: 320px) and (max-width: 767px) {
-
   aside {
     grid-template-columns: 1fr !important;
   }

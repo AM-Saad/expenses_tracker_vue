@@ -21,9 +21,15 @@
             <span>X</span>
           </h1>
           <h2>Manage Expneses, Manage Your Life</h2>
-          <div class="actions">
-            <router-link :to="{name:'auth'}" class="box foo">Login</router-link>
-            <a class="box foo" target="_blank">Sign Up</a>
+          <div class="flex">
+            <!-- <router-link :to="{name:'auth/login'}" class="box foo">Login</router-link>
+            <a class="box foo" target="_blank">Sign Up</a> -->
+                  <router-link class="btn" to="/auth/login"
+            >Login</router-link
+          >
+          <router-link class="btn" to="/auth/signup"
+            >Signup</router-link
+          >
           </div>
         </div>
       </div>
@@ -96,18 +102,18 @@ export default {
 
 <style scoped>
 .hero {
-    background: url('~@/assets/images/Main.svg') no-repeat center center;
-    /* position: absolute; */
-    z-index: 3;
-    /* bottom: 0; */
-    /* left: 50%; */
-    width: 100%;
-    /* -webkit-transform: translateX(-50%); */
-    /* transform: translateX(-50%); */
-    /* height: 43.75em; */
-    background-size: cover;
-    /* -webkit-animation: cloudLoop 20s linear infinite; */
-    animation: cloudLoop 20s linear infinite;
+  background: url("~@/assets/images/Main.svg") no-repeat center center;
+  /* position: absolute; */
+  z-index: 3;
+  /* bottom: 0; */
+  /* left: 50%; */
+  width: 100%;
+  /* -webkit-transform: translateX(-50%); */
+  /* transform: translateX(-50%); */
+  /* height: 43.75em; */
+  background-size: cover;
+  /* -webkit-animation: cloudLoop 20s linear infinite; */
+  animation: cloudLoop 20s linear infinite;
 }
 
 @keyframes cloudLoop {

@@ -106,7 +106,7 @@ button {
   border-radius: var(--radius);
   background: #e8f0fe;
   box-shadow: var(--shadow);
-  padding:0 var(--main-padding);
+  padding:0 var(--m-padding);
 
   border: 0;
 }

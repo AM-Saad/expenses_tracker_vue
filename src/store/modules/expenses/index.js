@@ -4,13 +4,9 @@ import mutations from './mutations';
 
 const state = {
   fetching: true,
-  customTypes: [],
+  categories: [],
   allExpenses: [],
-  filters: {items:[],types:[]},
-  dateRange: {
-    start: new Date(new Date().getFullYear(), new Date().getMonth() + 0, 1),
-    end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-  },
+  filters: { items: [], types: [] },
   url: "http://localhost:4000"
 };
 

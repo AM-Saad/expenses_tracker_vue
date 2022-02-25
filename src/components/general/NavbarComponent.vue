@@ -146,7 +146,7 @@ export default {
   height: 4rem;
   display: flex;
   align-items: center;
-  margin-bottom: var(--scnd-margin);
+  margin-bottom: var(--s-margin);
 
   background: #fff;
   border: 1px solid #ccc;

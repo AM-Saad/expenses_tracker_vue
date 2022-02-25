@@ -88,7 +88,7 @@ button {
   border: 0;
   background: #e8f0fe;
   box-shadow: var(--shadow);
-  padding:0 var(--main-padding);
+  padding:0 var(--m-padding);
 
 }
 .message {

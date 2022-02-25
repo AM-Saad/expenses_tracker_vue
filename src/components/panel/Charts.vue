@@ -69,7 +69,7 @@ export default {
         { name: "Nov", val: "11" },
         { name: "Dec", val: "12" },
       ],
-      year: "2021",
+      year: "2022",
     };
   },
   components: {
@@ -88,11 +88,9 @@ export default {
 
       this.loading = true;
       const expenses = await this.$store.dispatch({
-        type: "expenses/findByDate",
+        type: "expenses/getExpenses",
         data: {
-          from: `${this.year}-${date}-01`,
-          to: `${this.year}-${date}-31`,
-          datetype: "date",
+          url: `/admin/api/bills?from=${this.year}-${date}-01&&to=${this.year}-${date}-31&&type=date`
         },
       });
       const filteration = this.makeDailyExpensesFilterations(expenses);

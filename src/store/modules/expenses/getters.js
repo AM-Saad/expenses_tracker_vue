@@ -3,12 +3,11 @@ const findById = (state) => (id) => {
     return expenses
 }
 const findByType = (state) => (type) => {
-    const expenses = state.allExpenses.filter(i => i.type == type)
+    const expenses = state.allExpenses.filter(i => i.category == type)
     state.filtered = expenses
     return expenses
 }
 const sortlowest = (state) => (expenses) => {
-
     let sorted = []
     bubbleSort(expenses)
     function bubbleSort(arr) {
@@ -16,7 +15,7 @@ const sortlowest = (state) => (expenses) => {
         for (var i = arr.length; i > 0; i--) {
             noSwaps = true
             for (var j = 0; j < i - 1; j++) {
-                if (arr[j].total > arr[j + 1].total) {
+                if (arr[j].amount > arr[j + 1].amount) {
                     var temp = arr[j]
                     arr[j] = arr[j + 1]
                     arr[j + 1] = temp
@@ -27,7 +26,6 @@ const sortlowest = (state) => (expenses) => {
         }
         return sorted = arr
     }
-    state.filtered = sorted
     return sorted
 }
 const sortheigest = (state) => (expenses) => {
@@ -38,7 +36,7 @@ const sortheigest = (state) => (expenses) => {
         for (var i = arr.length; i > 0; i--) {
             noSwaps = true
             for (var j = 0; j < i - 1; j++) {
-                if (arr[j].total < arr[j + 1].total) {
+                if (arr[j].amount < arr[j + 1].amount) {
                     var temp = arr[j]
                     arr[j] = arr[j + 1]
                     arr[j + 1] = temp
@@ -49,7 +47,7 @@ const sortheigest = (state) => (expenses) => {
         }
         return sorted = arr
     }
-    state.filtered = sorted
+    console.log(sorted)
 
     return sorted
 }

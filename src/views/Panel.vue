@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div >
     <h3 class="greeting">
       Welcome,
       <b>{{ this.user }}.</b>
@@ -30,19 +30,21 @@ import OverAll from "@/components/panel/OverAll.vue";
 import Charts from "@/components/panel/Charts.vue";
 import Schaduled from "@/components/panel/Schaduled.vue";
 
-import { bus } from "../main.js";
-import * as io from "socket.io-client";
 import * as moment from "moment";
 
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "Panel",
   data() {
     return {
       thisMonthExpenses: [],
       lastMonthExpenses: [],
-      thisMonthFrom: moment().startOf("month").format("YYYY-MM-DD"),
-      thisMonthTo: moment().endOf("month").format("YYYY-MM-DD"),
+      thisMonthFrom: moment()
+        .startOf("month")
+        .format("YYYY-MM-DD"),
+      thisMonthTo: moment()
+        .endOf("month")
+        .format("YYYY-MM-DD"),
 
       lastMonthFrom: moment()
         .subtract(1, "month")
@@ -51,13 +53,8 @@ export default {
       lastMonthTo: moment()
         .subtract(1, "month")
         .endOf("month")
-        .format("YYYY-MM-DD"),
+        .format("YYYY-MM-DD")
     };
-  },
-  computed: {
-    ...mapState("expenses", [("isAuth", "allExpenses")]),
-    ...mapState(["networkconnections", "user", "isAuth"]),
-    ...mapActions(["checkConnection"]),
   },
   components: {
     RecentEvents,
@@ -65,11 +62,14 @@ export default {
     OverAll,
     Cards: Cards,
     Charts,
-    Schaduled,
+    Schaduled
   },
-  watch: {
-    user(user) {},
+  computed: {
+    ...mapState("expenses", [("isAuth", "allExpenses")]),
+    ...mapState(["networkconnections", "user", "isAuth"]),
+    ...mapActions(["checkConnection"])
   },
+
   mounted() {},
   async created() {
     if (this.networkconnections) {
@@ -77,46 +77,47 @@ export default {
     }
   },
   methods: {
-    getExpenses: async function () {
+    getExpenses: async function() {
       if (this.thisMonthExpenses.length == 0) {
         this.thisMonthExpenses = await this.$store.dispatch({
-          type: "expenses/findByDate",
+          type: "expenses/fetchBills",
           data: {
-            from: this.thisMonthFrom,
-            to: this.thisMonthTo,
-            update: true,
-            datetype: "date",
-          },
+            url: `/admin/api/bills?from=${this.thisMonthFrom}&&to=${
+              this.thisMonthTo
+            }&&type=date`,
+            update:false
+
+          }
         });
       }
       if (this.lastMonthExpenses.length == 0) {
         this.lastMonthExpenses = await this.$store.dispatch({
-          type: "expenses/findByDate",
+          type: "expenses/fetchBills",
           data: {
-            from: this.lastMonthFrom,
-            to: this.lastMonthTo,
-            update: false,
-            datetype: "date",
-          },
+            url: `/admin/api/bills?from=${this.lastMonthFrom}&&to=${
+              this.lastMonthTo
+            }&&type=date`,
+            update:false
+          }
         });
       }
-    },
+    }
   },
   watch: {
     networkconnections(val) {
       if (val) {
         this.getExpenses();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style>
 .greeting {
-  padding: 4px var(--main-padding);
+  padding: 4px var(--m-padding);
   border-radius: var(--scnd-radius);
-  font-weight: lighter;
+  font-weight: 600;
   color: var(--second-color);
 }
 
@@ -135,10 +136,10 @@ export default {
 }
 .over-all-review_compare_percentage_item .item_percentage p {
   font-size: 22px;
-  margin-left: var(--main-margin);
+  margin-left: var(--m-margin);
   font-weight: bold;
   background: #fff;
-  padding: var(--scnd-padding);
+  padding: var(--s-padding);
   border-radius: var(--main-radius);
   display: flex;
   align-items: center;
@@ -148,10 +149,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: var(--main-margin) 0;
+  margin: var(--m-margin) 0;
   font-size: 17px;
   border-radius: var(--scnd-radius);
-  padding: 0 var(--scnd-padding);
+  padding: 0 var(--s-padding);
   text-transform: capitalize;
   color: var(--second-color);
   font-weight: bold;
@@ -163,7 +164,7 @@ export default {
   height: 45px;
   width: 45px;
   border-radius: 5%;
-  margin-right: var(--scnd-margin);
+  margin-right: var(--s-margin);
 }
 .list-item:hover {
   box-shadow: unset;

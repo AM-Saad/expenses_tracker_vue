@@ -8,57 +8,62 @@ const checkAuth = (res, dispatch) => {
   }
 }
 
-const getAll = async ({ commit, state, rootState, dispatch }, { data }) => {
-  state.fetching = true
-  const res = await expenses.getAll(rootState.jwt, rootState.url)
+
+const createBill = async ({ commit, state, rootState, dispatch }, { data }) => {
+  const res = await expenses.createBill(data.expenses, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
-  state.fetching = false
-  res.state ? commit('updateExpenses', res.json.bills) : null
-};
-const createNew = async ({ commit, state, rootState, dispatch }, { data }) => {
-  const res = await expenses.save(data.expenses, rootState.jwt, rootState.url)
-  checkAuth(res, dispatch)
-  commit('msg', { msg: res.msg, type: res.state ? 'success' : 'warning' }, { root: true })
   res.state && commit('addnew', res.json.bills)
+  commit('msg', { msg: res.msg, type: res.code == 500 ? 'danger' : res.code === 200 ? 'success' : 'warning' }, { root: true })
   return res.state ? res.json.card : false
+
+
 };
-const getOne = async ({ commit, state, rootState, dispatch }, { data }) => {
+const fetchBill = async ({ commit, state, rootState, dispatch }, { data }) => {
   state.fetching = true
-  const res = await expenses.getOne(data.id, rootState.jwt, rootState.url)
+  const res = await expenses.fetchBill(data.id, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
   state.fetching = false
-  return res.state && res.json.bills
+  if (!res.state) {
+    commit('msg', { msg: res.msg, type: res.code == 500 ? 'danger' : 'warning' }, { root: true })
+  }
+  return res.json.bill
+
 };
 
-const findByDate = async ({ commit, state, rootState, dispatch }, { data }) => {
+const fetchBills = async ({ commit, state, rootState, dispatch }, { data }) => {
   state.fetching = true
-  const res = await expenses.byDate(data.from, data.to, data.datetype, rootState.jwt, rootState.url)
+  const res = await expenses.fetchBills(data.url, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
   state.fetching = false
-  data.update && commit('updateExpenses', res.json.bills)
-  state.filtered = []
+  if (data.update) {
+    commit('setBills', res.json.bills)
+  }
+  if (!res.state) {
+    commit('msg', { msg: res.msg, type: res.code == 500 ? 'danger' : 'warning' }, { root: true })
+  }
   return res.json.bills
 };
 
 
-const deleteOne = async ({ commit, rootState, dispatch }, { data }) => {
-  const res = await expenses.delete(data.expensesId, rootState.jwt, rootState.url)
+const deleteBill = async ({ commit, rootState, dispatch }, { data }) => {
+  const res = await expenses.deleteBill(data.expensesId, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
-
-  commit('msg', { msg: res.msg, type: res.state ? 'success' : 'warning' }, { root: true })
-  res.state && commit('deleteone', data.expensesId)
+  commit('msg', { msg: res.msg, type: res.code == 500 ? 'danger' : res.code === 200 ? 'success' : 'warning' }, { root: true })
+  res.state && commit('deleteBill', data.expensesId)
   return res.state ? true : false
 };
 
-const getypes = async ({ commit, rootState, dispatch }) => {
-  const res = await expenses.getCustomTypes(rootState.jwt, rootState.url)
+const fetchCategories = async ({ commit, rootState, dispatch }) => {
+  const res = await expenses.fetchCategories(rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
-  !res.state && commit('msg', { msg: res.msg, type: 'warning' }, { root: true })
-  res.state && commit('updateTypes', res.json.types)
+  res.state && commit('setCategories', res.json.types)
+  if (!res.state) {
+    commit('msg', { msg: res.msg, type: res.code == 500 ? 'danger' : 'warning' }, { root: true })
+  }
   return res.state && res.json.types
 };
-const createType = async ({ commit, rootState, dispatch }, { data }) => {
-  const res = await expenses.createCustomType(data.name, rootState.jwt, rootState.url)
+const createCategory = async ({ commit, rootState, dispatch }, { data }) => {
+  const res = await expenses.createCategory(data.name, rootState.jwt, rootState.url)
   checkAuth(res, dispatch)
   commit('msg', { msg: res.msg, type: res.state ? 'success' : 'warning' }, { root: true })
 
@@ -74,30 +79,34 @@ const approve = async ({ commit, rootState, dispatch }, { data }) => {
 };
 
 
+
+const setBills = async ({ commit }, items) => {
+  commit('setBills', items)
+}
 const updatesearchdate = async ({ commit }, { date }) => {
   commit('updatesearchdate', date)
 }
-
-const checkFilter = ({ rootState }, { filterType, filterVal }) => {
-  let exist = false
-  for (let item of rootState.filters.types) {
-    if (item.filterType === filterType && item.filterVal === filterVal) {
-      exist = true
-      break
-    }
-  }
-  return exist
+const updateFilter = async ({ commit }, { data }) => {
+  commit('updateFilter', data)
+}
+const removeFilter = async ({ commit }, data) => {
+  commit('removeFilter', data)
+}
+const resetFilter = async ({ commit }) => {
+  commit('resetFilter')
 }
 
 export default {
-  getAll,
-  getOne,
-  createNew,
-  findByDate,
-  createType,
-  getypes,
-  deleteOne,
+  fetchBill,
+  createBill,
+  fetchBills,
+  createCategory,
+  fetchCategories,
+  deleteBill,
   approve,
   updatesearchdate,
-  checkFilter
+  updateFilter,
+  removeFilter,
+  resetFilter,
+  setBills
 };
