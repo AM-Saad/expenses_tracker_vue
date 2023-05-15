@@ -12,7 +12,14 @@ import * as moment from 'moment'
 import VDragged from "v-dragged";
 import VCalendar from 'v-calendar';
 // import 'v-calendar/lib/v-calendar.min.css';
+import ImageKit from "imagekitio-vue"
 
+Vue.use(ImageKit, {
+  urlEndpoint: "your_url_endpoint", // Required. Default URL-endpoint is https://ik.imagekit.io/your_imagekit_id
+  publicKey: "your_public_api_key", // optional
+  authenticationEndpoint: "https://www.your-server.com/auth" // optional
+  // transformationPosition: "path" // optional
+})
 // Use v-calendar, v-date-picker & v-popover components
 Vue.use(VCalendar);
 

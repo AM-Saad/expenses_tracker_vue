@@ -15,6 +15,7 @@
     "axios": "^0.18.0",
     "chart.js": "^2.9.3",
     "core-js": "^2.6.5",
+    "imagekitio-vue": "^1.0.9",
     "jquery": "^3.4.1",
     "moment": "^2.26.0",
     "socket.io-client": "^2.2.0",
@@ -34,6 +35,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
+    "tailwindcss": "^3.0.24",
     "vue-template-babel-compiler": "^1.0.8",
     "vue-template-compiler": "^2.5.21"
   },

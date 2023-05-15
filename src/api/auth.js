@@ -8,7 +8,7 @@ export default class authService {
 
     static async signup(data, url) {
 
-        return await request(null, `${url}/signup`, 'post', JSON.stringify({ name: data.name, email: data.email, password: data.password, confirmpassword: data.confirmpassword }), true)
+        return await request(null, `${url}/signup`, 'post', JSON.stringify({...data}), true)
 
     }
 }

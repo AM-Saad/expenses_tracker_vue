@@ -46,12 +46,23 @@
             autocomplete="false | unknown-autocomplete-value"
           />
         </div>
+        <div class="form-group">
+          <input
+            type="password"
+            id="confirm-password-client"
+            name="confirmPassword"
+            class="form-control"
+            placeholder="Confirm Your Password..."
+            v-model="confirmPassword"
+            autocomplete="false | unknown-autocomplete-value"
+          />
+        </div>
         <a v-if="!loading" @click="toggleForms('login', 'signup')">
           Already have an account
           <b>Login</b>
         </a>
         <input v-if="!loading" type="submit" value="Sign up" class="btn" />
-        <button disabled="disabled" class="btn opacity-5" v-if="loading">Loading</button>
+        <button disabled="disabled" class="btn opacity-5" v-if="loading">Sign up...</button>
 
       </div>
     </form>
@@ -103,7 +114,7 @@
           <b>Sign up</b>
         </a>
         <input v-if="!loading" type="submit" value="Login" class="btn" />
-        <button disabled="disabled" class="btn  opacity-5" v-if="loading">Loading</button>
+        <button disabled="disabled" class="btn  opacity-5" v-if="loading">Login...</button>
       </div>
     </form>
   </div>
@@ -114,9 +125,10 @@ export default {
   name: "AuthForms",
   data() {
     return {
-      name: "",
-      email: "",
-      password: "",
+      name: null,
+      email: null,
+      password:null,
+      confirmPassword: null,
       rememberMe: false,
       loading: false
     };
@@ -136,24 +148,24 @@ export default {
     async signup() {
       this.resetFeedbackMsgs();
 
-      if (!this.name || !this.email || !this.password) {
+      if (!this.name || !this.email || !this.password ) {
         return (document.querySelector(".signup-error").innerHTML =
-          "Please add your informations ");
+          "All fields are required!");
       }
       this.loading = true;
       const res = await this.$store.dispatch({
-        type: "user/signup",
+        type: "signup",
         data: {
           name: this.name,
           email: this.email,
-          password: this.password
+          password: this.password,
+          confirmPassword:this.confirmPassword
         }
       });
-      if (!res.state) {
         this.loading = false;
+      if (!res.state) {
         return (document.querySelector(".signup-error").innerHTML = res.msg);
       }
-      this.loading = false;
 
       this.$refs.login.classList.add("block");
       this.$refs.signup.classList.remove("block");
@@ -165,7 +177,7 @@ export default {
       this.resetFeedbackMsgs();
       if (!this.email || !this.password) {
         return (document.querySelector(".login-error").innerHTML =
-          "Please add your informations ");
+          "All fields are required!");
       }
       this.loading = true;
       const res = await this.$store.dispatch({
@@ -176,8 +188,9 @@ export default {
           rememberMe: this.rememberMe
         }
       });
-      if (!res.state) {
         this.loading = false;
+
+      if (!res.state) {
         return (document.querySelector(".login-error").innerHTML = res.msg);
       }
       localStorage.setItem("uid", res.json._id);
@@ -198,13 +211,7 @@ export default {
     }
   },
   watch: {
-    // "$route.params.type": function(type) {
-    //   if (type == "signup") {
-    //     this.toggleForms("signup", "login");
-    //   } else {
-    //     this.toggleForms("login", "signup");
-    //   }
-    // }
+
   }
 };
 </script>
